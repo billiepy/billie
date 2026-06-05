@@ -9,8 +9,8 @@ API_ID = int(os.getenv("API_ID"))
 API_HASH = os.getenv("API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 OWNER_ID = int(os.getenv("OWNER_ID", None))
-OWNER_USERNAME = os.getenv("OWNER_USERNAME", "WTF_WhyMeeh")
-BOT_USERNAME = os.getenv("BOT_USERNAME", "ShrutixMusicBot")
+OWNER_USERNAME = os.getenv("OWNER_USERNAME", "@your_aadiii")
+BOT_USERNAME = os.getenv("BOT_USERNAME", "@aadimusicrobot")
 
 MONGO_DB_URI = os.getenv("MONGO_DB_URI", None)
 LOG_GROUP_ID = int(os.getenv("LOG_GROUP_ID", None))
@@ -21,10 +21,10 @@ UPSTREAM_REPO = os.getenv("UPSTREAM_REPO", "https://github.com/NoxxOP/ShrutiMusi
 UPSTREAM_BRANCH = os.getenv("UPSTREAM_BRANCH", "main")
 GIT_TOKEN = os.getenv("GIT_TOKEN", None)
 
-SUPPORT_CHANNEL = os.getenv("SUPPORT_CHANNEL", "https://t.me/ShrutiBots")
-SUPPORT_GROUP = os.getenv("SUPPORT_GROUP", "https://t.me/ShrutiBotsSupport")
-INSTAGRAM = os.getenv("INSTAGRAM", "https://instagram.com/yaduwanshi_nand")
-YOUTUBE = os.getenv("YOUTUBE", "https://youtube.com/@NandEditz")
+SUPPORT_CHANNEL = os.getenv("SUPPORT_CHANNEL", "https://t.me/yourr_adiii")
+SUPPORT_GROUP = os.getenv("SUPPORT_GROUP", "https://t.me/+e4OBbdsY0kdlZTk9")
+INSTAGRAM = os.getenv("INSTAGRAM", "https://www.instagram.com/voice_of_adarsh?igsh=Y3FkbHlpZTFwYTY2")
+YOUTUBE = os.getenv("YOUTUBE", "https://youtube.com/@earnfreeandfair?si=BLvh3t-jLIoSXhRm")
 GITHUB = os.getenv("GITHUB", "https://github.com/NoxxOP")
 DONATE = os.getenv("DONATE", "https://t.me/ShrutiBots/91")
 PRIVACY_LINK = os.getenv("PRIVACY_LINK", "https://graph.org/Privacy-Policy-05-01-30")
@@ -46,8 +46,8 @@ STRING5 = os.getenv("STRING_SESSION5", None)
 
 AUTO_LEAVING_ASSISTANT = bool(os.getenv("AUTO_LEAVING_ASSISTANT", False))
 
-START_IMG_URL = os.getenv("START_IMG_URL", "https://files.catbox.moe/7q8bfg.jpg")
-PING_IMG_URL = "https://files.catbox.moe/eehxb4.jpg"
+START_IMG_URL = os.getenv("START_IMG_URL", "https://files.catbox.moe/q9yvvf.jpg")
+PING_IMG_URL = "https://files.catbox.moe/1nuw90.jpg"
 PLAYLIST_IMG_URL = "https://files.catbox.moe/eehxb4.jpg"
 STATS_IMG_URL = "https://files.catbox.moe/eehxb4.jpg"
 TELEGRAM_AUDIO_URL = "https://files.catbox.moe/eehxb4.jpg"
