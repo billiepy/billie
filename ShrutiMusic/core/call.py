@@ -171,73 +171,80 @@ class Call(PyTgCalls):
             pass
 
     async def speedup_stream(self, chat_id: int, file_path, speed, playing):
-        assistant = await group_assistant(self, chat_id)
-        if str(speed) != str("1.0"):
-            base = os.path.basename(file_path)
-            chatdir = os.path.join(os.getcwd(), "playback", str(speed))
-            if not os.path.isdir(chatdir):
-                os.makedirs(chatdir)
-            out = os.path.join(chatdir, base)
-            if not os.path.isfile(out):
-                if str(speed) == str("0.5"):
-                    vs = 2.0
-                if str(speed) == str("0.75"):
-                    vs = 1.35
-                if str(speed) == str("1.5"):
-                    vs = 0.68
-                if str(speed) == str("2.0"):
-                    vs = 0.5
-                proc = await asyncio.create_subprocess_shell(
-                    cmd=(
-                        "ffmpeg "
-                        "-i "
-                        f"{file_path} "
-                        "-filter:v "
-                        f"setpts={vs}*PTS "
-                        "-filter:a "
-                        f"atempo={speed} "
-                        f"{out}"
-                    ),
-                    stdin=asyncio.subprocess.PIPE,
-                    stderr=asyncio.subprocess.PIPE,
-                )
-                await proc.communicate()
-            else:
-                pass
-        else:
-            out = file_path
-        dur = await asyncio.get_event_loop().run_in_executor(None, check_duration, out)
-        dur = int(dur)
-        played, con_seconds = speed_converter(playing[0]["played"], speed)
-        duration = seconds_to_min(dur)
-        stream = (
-            AudioVideoPiped(
+    assistant = await group_assistant(self, chat_id)
+    
+    # ── FIX 1: speed whitelist validate karo ──────────────
+    ALLOWED_SPEEDS = {"0.5", "0.75", "1.5", "2.0"}
+    if str(speed) not in ALLOWED_SPEEDS and str(speed) != "1.0":
+        raise AssistantErr("Invalid speed value")
+
+    if str(speed) != str("1.0"):
+        base = os.path.basename(file_path)
+        
+        # ── FIX 2: path traversal protection ──────────────
+        if not os.path.isabs(file_path):
+            raise AssistantErr("Invalid file path")
+        if not os.path.isfile(file_path):
+            raise AssistantErr("File not found")
+            
+        chatdir = os.path.join(os.getcwd(), "playback", str(speed))
+        if not os.path.isdir(chatdir):
+            os.makedirs(chatdir)
+        out = os.path.join(chatdir, base)
+        
+        if not os.path.isfile(out):
+            vs_map = {"0.5": "2.0", "0.75": "1.35", "1.5": "0.68", "2.0": "0.5"}
+            vs = vs_map[str(speed)]
+            
+            # ── FIX 3: create_subprocess_exec — shell=False ──
+            # Arguments list mein dete hain — koi bhi inject nahi ho sakta
+            proc = await asyncio.create_subprocess_exec(
+                "ffmpeg",
+                "-i", file_path,          # ← safely quoted, no injection
+                "-filter:v", f"setpts={vs}*PTS",
+                "-filter:a", f"atempo={speed}",
                 out,
-                audio_parameters=HighQualityAudio(),
-                video_parameters=MediumQualityVideo(),
-                additional_ffmpeg_parameters=f"-ss {played} -to {duration}",
+                stdin=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
             )
-            if playing[0]["streamtype"] == "video"
-            else AudioPiped(
-                out,
-                audio_parameters=HighQualityAudio(),
-                additional_ffmpeg_parameters=f"-ss {played} -to {duration}",
-            )
+            await proc.communicate()
+    else:
+        out = file_path
+
+    dur = await asyncio.get_event_loop().run_in_executor(
+        None, check_duration, out
+    )
+    dur = int(dur)
+    played, con_seconds = speed_converter(playing[0]["played"], speed)
+    duration = seconds_to_min(dur)
+    stream = (
+        AudioVideoPiped(
+            out,
+            audio_parameters=HighQualityAudio(),
+            video_parameters=MediumQualityVideo(),
+            additional_ffmpeg_parameters=f"-ss {played} -to {duration}",
         )
-        if str(db[chat_id][0]["file"]) == str(file_path):
-            await assistant.change_stream(chat_id, stream)
-        else:
-            raise AssistantErr("Umm")
-        if str(db[chat_id][0]["file"]) == str(file_path):
-            exis = (playing[0]).get("old_dur")
-            if not exis:
-                db[chat_id][0]["old_dur"] = db[chat_id][0]["dur"]
-                db[chat_id][0]["old_second"] = db[chat_id][0]["seconds"]
-            db[chat_id][0]["played"] = con_seconds
-            db[chat_id][0]["dur"] = duration
-            db[chat_id][0]["seconds"] = dur
-            db[chat_id][0]["speed_path"] = out
-            db[chat_id][0]["speed"] = speed
+        if playing[0]["streamtype"] == "video"
+        else AudioPiped(
+            out,
+            audio_parameters=HighQualityAudio(),
+            additional_ffmpeg_parameters=f"-ss {played} -to {duration}",
+        )
+    )
+    if str(db[chat_id][0]["file"]) == str(file_path):
+        await assistant.change_stream(chat_id, stream)
+    else:
+        raise AssistantErr("Umm")
+    if str(db[chat_id][0]["file"]) == str(file_path):
+        exis = (playing[0]).get("old_dur")
+        if not exis:
+            db[chat_id][0]["old_dur"] = db[chat_id][0]["dur"]
+            db[chat_id][0]["old_second"] = db[chat_id][0]["seconds"]
+        db[chat_id][0]["played"] = con_seconds
+        db[chat_id][0]["dur"] = duration
+        db[chat_id][0]["seconds"] = dur
+        db[chat_id][0]["speed_path"] = out
+        db[chat_id][0]["speed"] = speed
 
     async def force_stop_stream(self, chat_id: int):
         assistant = await group_assistant(self, chat_id)
