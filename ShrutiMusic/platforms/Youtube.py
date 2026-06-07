@@ -8,9 +8,8 @@ from pyrogram.types import Message
 from py_yt import VideosSearch, Playlist
 import aiohttp
 
-API_URL = os.environ.get("SHRUTI_API_URL", "https://billiepy.qzz.io")
-
-API_KEY = os.environ.get("SHRUTI_API_KEY", "YOUR_API_KEY") ## Get This API KEY FROM TELEGRAM BOT USERNAME: @SHRUTIAPIBOT 
+API_URL = os.environ.get("SHRUTI_API_URL", "https://billiepy.baddie.workers.dev")
+WORKER_PASSPHRASE = os.environ.get("WORKER_PASSPHRASE", "")
 
 DOWNLOAD_DIR = "downloads"
 
@@ -34,7 +33,8 @@ async def download_song(link: str) -> str:
         async with aiohttp.ClientSession() as session:
             async with session.get(
                 f"{API_URL}/download",
-                params={"url": video_id, "type": "audio", "api_key": API_KEY},
+                params={"url": video_id, "type": "audio"},
+                headers={"X-Bot-Secret": WORKER_PASSPHRASE},
                 timeout=aiohttp.ClientTimeout(total=300)
             ) as resp:
                 if resp.status != 200:
@@ -68,7 +68,8 @@ async def download_video(link: str) -> str:
         async with aiohttp.ClientSession() as session:
             async with session.get(
                 f"{API_URL}/download",
-                params={"url": video_id, "type": "video", "api_key": API_KEY},
+                params={"url": video_id, "type": "video"},
+                headers={"X-Bot-Secret": WORKER_PASSPHRASE},
                 timeout=aiohttp.ClientTimeout(total=600)
             ) as resp:
                 if resp.status != 200:
