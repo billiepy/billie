@@ -288,7 +288,7 @@ async def gen_thumb(videoid: str):
         DOT_R       = 6
         played_frac = 0.11
         bar_mid     = BAR_Y + BAR_H // 2
-        fill_x      = BAR_X1 + int((BAR_X2 - BAR_X1) * played_frac)
+        fill_x      = max(BAR_X1 + 2, BAR_X1 + int((BAR_X2 - BAR_X1) * played_frac))
 
         # Track
         draw.rounded_rectangle(
@@ -340,7 +340,7 @@ async def gen_thumb(videoid: str):
         vol_fac  = 0.45
         vol_x1   = BAR_X1 + 30
         vol_x2   = BAR_X2 - 30
-        vol_fill = vol_x1 + int((vol_x2 - vol_x1) * vol_fac)
+        vol_fill = max(vol_x1 + 2, vol_x1 + int((vol_x2 - vol_x1) * vol_fac))
         vol_dot  = 5
         vol_mid  = VOL_Y + VOL_H // 2
 
