@@ -13,7 +13,7 @@ OWNER_USERNAME = os.getenv("OWNER_USERNAME", "ililililililililiilililililili")
 BOT_USERNAME = os.getenv("BOT_USERNAME", "BasmaMusicBot")
 
 MONGO_DB_URI = os.getenv("MONGO_DB_URI", None)
-LOG_GROUP_ID = int(os.getenv("LOG_GROUP_ID", None))
+LOG_GROUP_ID = os.getenv("LOG_GROUP_ID", None)
 HEROKU_APP_NAME = os.getenv("HEROKU_APP_NAME")
 HEROKU_API_KEY = os.getenv("HEROKU_API_KEY")
 
