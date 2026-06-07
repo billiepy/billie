@@ -258,10 +258,10 @@ async def gen_thumb(videoid: str):
         print(f"[gen_thumb Error - Using Default] {e}")
         try:
             base_img = Image.open(DEFAULT_THUMB).convert("RGBA")
-            title = "ShrutiMusic"
+            title = "SiloMusic"
             duration = "Unknown"
             views = "Unknown Views"
-            channel = "ShrutiBots"
+            channel = "PoppyGc"
         except:
             traceback.print_exc()
             return None
