@@ -346,13 +346,13 @@ async def gen_thumb(videoid: str):
 
         _draw_speaker(draw, vol_x1 - 22, vol_mid, 14, DIM)
 
-        draw.rounded_rectangle(
+        draw.rectangle(
             [vol_x1, VOL_Y, vol_x2, VOL_Y+VOL_H],
-            radius=1, fill=VOL_TRACK
+            fill=VOL_TRACK
         )
-        draw.rounded_rectangle(
+        draw.rectangle(
             [vol_x1, VOL_Y, vol_fill, VOL_Y+VOL_H],
-            radius=1, fill=VOL_FILL
+            fill=VOL_FILL
         )
         draw.ellipse(
             [vol_fill-vol_dot, vol_mid-vol_dot,
