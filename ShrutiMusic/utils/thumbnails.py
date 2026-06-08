@@ -393,9 +393,18 @@ def _render_thumbnail(base_image: Image.Image,
         )
 
         # ── Step 5: Text — Song Title ─────────────────────────
-        # Truncate long titles to fit within the card's text area
-        title_display = title if len(title) <= 34 else title[:32] + "..."
-        title_y       = brand_y + 30
+        # Truncate title based on PIXEL width, not character count
+        # Inter-Bold 35px me wide chars jaldi overflow karte hain
+        title_display = title
+        max_title_w   = (CARD_X + CARD_W) - TEXT_X - 28
+        while True:
+            bbox = draw.textbbox((0, 0), title_display, font=LOADED_FONTS["title"])
+            if (bbox[2] - bbox[0]) <= max_title_w or len(title_display) < 5:
+                break
+            title_display = title_display[:-1].rstrip()
+        if title_display != title:
+            title_display = title_display[:-3].rstrip() + "..."
+        title_y = brand_y + 30
         draw.text(
             (TEXT_X, title_y),
             title_display,
